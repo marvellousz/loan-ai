@@ -2,30 +2,29 @@
 
 import { ArrowLeft } from "lucide-react"
 import { Button } from "@/components/ui/button"
-import type { Language } from "@/lib/translations"
+import { LanguageToggler } from "@/components/ui/language-toggler"
 
 interface AppHeaderProps {
   title: string
-  language: Language
   onBack?: () => void
   showBack?: boolean
 }
 
-export function AppHeader({ title, language, onBack, showBack = true }: AppHeaderProps) {
+export function AppHeader({ title, onBack, showBack = true }: AppHeaderProps) {
   return (
-    <header className="bg-white border-b border-gray-200 sticky top-0 z-10">
+    <header className="bg-background border-b border-border sticky top-0 z-10">
       <div className="flex items-center justify-between px-4 py-4">
         {showBack ? (
-          <Button variant="ghost" size="sm" onClick={onBack || (() => window.history.back())} className="p-2">
-            <ArrowLeft className="w-5 h-5" />
-          </Button>
+                  <Button variant="ghost" size="sm" onClick={onBack || (() => window.history.back())} className="p-2 cursor-pointer">
+          <ArrowLeft className="w-5 h-5" />
+        </Button>
         ) : (
           <div className="w-9" />
         )}
 
-        <h1 className="font-semibold text-lg text-gray-900 text-center flex-1">{title}</h1>
+        <h1 className="font-semibold text-lg text-foreground text-center flex-1">{title}</h1>
 
-        <div className="w-9" />
+        <LanguageToggler />
       </div>
     </header>
   )

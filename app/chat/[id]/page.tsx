@@ -29,12 +29,12 @@ export default function ChatPage() {
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const [application, setApplication] = useState<LoanApplication | null>(null)
-  const [language, setLanguage] = useState<Language>("hi")
   const [messages, setMessages] = useState<ChatMessage[]>([])
   const [inputMessage, setInputMessage] = useState("")
   const [isTyping, setIsTyping] = useState(false)
   const [isListening, setIsListening] = useState(false)
   const [botTyping, setBotTyping] = useState(false)
+  const [language, setLanguage] = useState<Language>("hi")
 
   // Predefined bot responses
   const botResponses = {
@@ -226,12 +226,21 @@ export default function ChatPage() {
       <MobileContainer>
         <div className="flex items-center justify-center h-screen">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">{t("loading", language)}</p>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-secondary-foreground">{t("loading", language)}</p>
           </div>
         </div>
       </MobileContainer>
     )
+  }
+
+  const handleLanguageSelect = (lang: Language) => {
+    setLanguage(lang)
+    const user = MockDB.getCurrentUser()
+    if (user) {
+      const updatedUser = { ...user, preferredLanguage: lang }
+      MockDB.setCurrentUser(updatedUser)
+    }
   }
 
   const quickReplies =
@@ -241,24 +250,48 @@ export default function ChatPage() {
 
   return (
     <MobileContainer className="flex flex-col">
-      <AppHeader title={language === "hi" ? "चैट सहायता" : "Chat Support"} language={language} onBack={goBack} />
+      <AppHeader title={language === "hi" ? "चैट सहायता" : "Chat Support"} onBack={goBack} />
+
+      {/* Language Toggle */}
+      <div className="bg-card border-b border-border p-3">
+        <div className="flex justify-end">
+          <div className="flex gap-1 bg-secondary rounded-lg p-1">
+            <button
+              onClick={() => handleLanguageSelect("hi")}
+              className={`px-3 py-1 text-sm rounded-md transition-colors cursor-pointer ${
+                language === "hi" ? "bg-background text-primary shadow-sm" : "text-secondary-foreground hover:text-foreground"
+              }`}
+            >
+              हिं
+            </button>
+            <button
+              onClick={() => handleLanguageSelect("en")}
+              className={`px-3 py-1 text-sm rounded-md transition-colors cursor-pointer ${
+                language === "en" ? "bg-background text-primary shadow-sm" : "text-secondary-foreground hover:text-foreground"
+              }`}
+            >
+              EN
+            </button>
+          </div>
+        </div>
+      </div>
 
       {/* Application Status Bar */}
-      <div className="bg-white border-b border-gray-200 p-3">
+      <div className="bg-card border-b border-border p-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <div
               className={`w-2 h-2 rounded-full ${
                 application.status === "approved"
-                  ? "bg-green-500"
+                  ? "bg-primary"
                   : application.status === "rejected"
-                    ? "bg-red-500"
+                    ? "bg-destructive"
                     : application.status === "under_review"
                       ? "bg-blue-500"
                       : "bg-yellow-500"
               }`}
             />
-            <span className="text-sm font-medium text-gray-900">{application.personalInfo.name}</span>
+            <span className="text-sm font-medium text-foreground">{application.personalInfo.name}</span>
           </div>
 
           <Badge variant="outline" className="text-xs">
@@ -279,24 +312,24 @@ export default function ChatPage() {
               {/* Avatar */}
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center ${
-                  message.sender === "user" ? "bg-blue-600" : "bg-gray-600"
+                  message.sender === "user" ? "bg-primary" : "bg-secondary"
                 }`}
               >
                 {message.sender === "user" ? (
-                  <User className="w-4 h-4 text-white" />
+                  <User className="w-4 h-4 text-primary-foreground" />
                 ) : (
-                  <Bot className="w-4 h-4 text-white" />
+                  <Bot className="w-4 h-4 text-primary-foreground" />
                 )}
               </div>
 
               {/* Message Bubble */}
               <div
                 className={`rounded-2xl px-4 py-3 ${
-                  message.sender === "user" ? "bg-blue-600 text-white" : "bg-gray-100 text-gray-900"
+                  message.sender === "user" ? "bg-primary text-primary-foreground" : "bg-secondary text-foreground"
                 }`}
               >
                 <p className="text-sm whitespace-pre-line">{message.message}</p>
-                <p className={`text-xs mt-1 ${message.sender === "user" ? "text-blue-100" : "text-gray-500"}`}>
+                <p className={`text-xs mt-1 ${message.sender === "user" ? "text-primary-foreground/80" : "text-secondary-foreground"}`}>
                   {message.timestamp.toLocaleTimeString("en-IN", {
                     hour: "2-digit",
                     minute: "2-digit",
@@ -311,18 +344,18 @@ export default function ChatPage() {
         {botTyping && (
           <div className="flex justify-start">
             <div className="flex items-start gap-2 max-w-[80%]">
-              <div className="w-8 h-8 rounded-full bg-gray-600 flex items-center justify-center">
-                <Bot className="w-4 h-4 text-white" />
+              <div className="w-8 h-8 rounded-full bg-secondary flex items-center justify-center">
+                <Bot className="w-4 h-4 text-primary-foreground" />
               </div>
-              <div className="bg-gray-100 rounded-2xl px-4 py-3">
+              <div className="bg-secondary rounded-2xl px-4 py-3">
                 <div className="flex gap-1">
-                  <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                  <div className="w-2 h-2 bg-muted rounded-full animate-bounce"></div>
                   <div
-                    className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                    className="w-2 h-2 bg-muted rounded-full animate-bounce"
                     style={{ animationDelay: "0.1s" }}
                   ></div>
                   <div
-                    className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"
+                    className="w-2 h-2 bg-muted rounded-full animate-bounce"
                     style={{ animationDelay: "0.2s" }}
                   ></div>
                 </div>
@@ -343,7 +376,7 @@ export default function ChatPage() {
               variant="outline"
               size="sm"
               onClick={() => sendQuickReply(reply)}
-              className="whitespace-nowrap text-xs"
+              className="whitespace-nowrap text-xs cursor-pointer"
             >
               {reply}
             </Button>
@@ -352,7 +385,7 @@ export default function ChatPage() {
       </div>
 
       {/* Input Area */}
-      <div className="bg-white border-t border-gray-200 p-4">
+      <div className="bg-card border-t border-border p-4">
         <div className="flex items-end gap-2">
           <div className="flex-1 relative">
             <Input
@@ -369,7 +402,7 @@ export default function ChatPage() {
             variant={isListening ? "default" : "outline"}
             size="icon"
             onClick={toggleVoice}
-            className={isListening ? "bg-red-600 hover:bg-red-700" : ""}
+            className={`cursor-pointer ${isListening ? "bg-destructive hover:bg-destructive/90" : ""}`}
           >
             {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
           </Button>
@@ -377,15 +410,15 @@ export default function ChatPage() {
           <Button
             onClick={sendMessage}
             disabled={!inputMessage.trim() || botTyping}
-            className="bg-blue-600 hover:bg-blue-700"
+            className="bg-primary hover:bg-primary/90 cursor-pointer"
           >
             <Send className="w-4 h-4" />
           </Button>
         </div>
 
         {isListening && (
-          <div className="mt-2 flex items-center gap-2 text-sm text-red-600">
-            <div className="w-2 h-2 bg-red-600 rounded-full animate-pulse"></div>
+          <div className="mt-2 flex items-center gap-2 text-sm text-destructive">
+            <div className="w-2 h-2 bg-destructive rounded-full animate-pulse"></div>
             {language === "hi" ? "सुन रहा हूँ..." : "Listening..."}
           </div>
         )}

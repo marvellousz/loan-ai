@@ -37,31 +37,31 @@ export default function HomePage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+    <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="bg-white shadow-sm border-b">
+      <header className="bg-card shadow-sm border-b border-border">
         <div className="max-w-md mx-auto px-4 py-4 flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center">
-              <Zap className="w-5 h-5 text-white" />
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
+              <Zap className="w-5 h-5 text-primary-foreground" />
             </div>
-            <span className="font-semibold text-lg">LoanAI</span>
+            <span className="font-semibold text-lg text-foreground">LoanAI</span>
           </div>
 
           {/* Language Toggle */}
-          <div className="flex gap-1 bg-gray-100 rounded-lg p-1">
+          <div className="flex gap-1 bg-secondary rounded-lg p-1">
             <button
               onClick={() => handleLanguageSelect("hi")}
-              className={`px-3 py-1 text-sm rounded-md transition-colors ${
-                language === "hi" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:text-gray-800"
+              className={`px-3 py-1 text-sm rounded-md transition-colors cursor-pointer ${
+                language === "hi" ? "bg-card text-primary shadow-sm" : "text-secondary-foreground hover:text-foreground"
               }`}
             >
               हिं
             </button>
             <button
               onClick={() => handleLanguageSelect("en")}
-              className={`px-3 py-1 text-sm rounded-md transition-colors ${
-                language === "en" ? "bg-white text-blue-600 shadow-sm" : "text-gray-600 hover:text-gray-800"
+              className={`px-3 py-1 text-sm rounded-md transition-colors cursor-pointer ${
+                language === "en" ? "bg-card text-primary shadow-sm" : "text-secondary-foreground hover:text-foreground"
               }`}
             >
               EN
@@ -74,17 +74,17 @@ export default function HomePage() {
       <main className="max-w-md mx-auto px-4 py-8">
         {/* Hero Section */}
         <div className="text-center mb-8">
-          <div className="w-20 h-20 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
-            <Smartphone className="w-10 h-10 text-white" />
+          <div className="w-20 h-20 bg-primary rounded-full flex items-center justify-center mx-auto mb-6">
+            <Smartphone className="w-10 h-10 text-primary-foreground" />
           </div>
 
-          <h1 className="text-3xl font-bold text-gray-900 mb-3 text-balance">{t("welcomeTitle", language)}</h1>
+          <h1 className="text-3xl font-bold text-foreground mb-3 text-balance">{t("welcomeTitle", language)}</h1>
 
-          <p className="text-lg text-gray-600 mb-8 text-pretty">{t("welcomeSubtitle", language)}</p>
+          <p className="text-lg text-secondary-foreground mb-8 text-pretty">{t("welcomeSubtitle", language)}</p>
 
           <Button
             onClick={startApplication}
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 text-lg font-semibold rounded-xl"
+            className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-6 text-lg font-semibold rounded-xl"
           >
             {t("startApplication", language)}
           </Button>
@@ -94,12 +94,12 @@ export default function HomePage() {
         <div className="space-y-4 mb-8">
           <Card className="border-0 shadow-sm">
             <CardContent className="p-4 flex items-center gap-4">
-              <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                <Zap className="w-6 h-6 text-green-600" />
+              <div className="w-12 h-12 bg-secondary rounded-lg flex items-center justify-center">
+                <Zap className="w-6 h-6 text-primary" />
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900">{language === "hi" ? "तुरंत अप्रूवल" : "Instant Approval"}</h3>
-                <p className="text-sm text-gray-600">
+                <h3 className="font-semibold text-foreground">{language === "hi" ? "तुरंत अप्रूवल" : "Instant Approval"}</h3>
+                <p className="text-sm text-secondary-foreground">
                   {language === "hi" ? "AI की मदद से 5 मिनट में" : "AI-powered in 5 minutes"}
                 </p>
               </div>
@@ -108,14 +108,14 @@ export default function HomePage() {
 
           <Card className="border-0 shadow-sm">
             <CardContent className="p-4 flex items-center gap-4">
-              <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                <Shield className="w-6 h-6 text-blue-600" />
+              <div className="w-12 h-12 bg-secondary rounded-lg flex items-center justify-center">
+                <Shield className="w-6 h-6 text-primary" />
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900">
+                <h3 className="font-semibold text-foreground">
                   {language === "hi" ? "सुरक्षित प्रक्रिया" : "Secure Process"}
                 </h3>
-                <p className="text-sm text-gray-600">
+                <p className="text-sm text-secondary-foreground">
                   {language === "hi" ? "आपकी जानकारी पूरी तरह सुरक्षित" : "Your data is completely secure"}
                 </p>
               </div>
@@ -124,12 +124,12 @@ export default function HomePage() {
 
           <Card className="border-0 shadow-sm">
             <CardContent className="p-4 flex items-center gap-4">
-              <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                <Users className="w-6 h-6 text-purple-600" />
+              <div className="w-12 h-12 bg-secondary rounded-lg flex items-center justify-center">
+                <Users className="w-6 h-6 text-primary" />
               </div>
               <div>
-                <h3 className="font-semibold text-gray-900">{language === "hi" ? "24/7 सहायता" : "24/7 Support"}</h3>
-                <p className="text-sm text-gray-600">
+                <h3 className="font-semibold text-foreground">{language === "hi" ? "24/7 सहायता" : "24/7 Support"}</h3>
+                <p className="text-sm text-secondary-foreground">
                   {language === "hi" ? "हमेशा आपकी मदद के लिए तैयार" : "Always ready to help you"}
                 </p>
               </div>
@@ -142,7 +142,7 @@ export default function HomePage() {
           <Button
             variant="outline"
             onClick={goToAdmin}
-            className="text-sm text-gray-500 border-gray-200 bg-transparent"
+            className="text-sm text-muted-foreground border-border bg-transparent"
           >
             {t("adminDashboard", language)}
           </Button>

@@ -43,10 +43,10 @@ export default function DocumentUploadPage() {
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const [application, setApplication] = useState<LoanApplication | null>(null)
-  const [language, setLanguage] = useState<Language>("hi")
   const [isOnline, setIsOnline] = useState(true)
   const [uploadingDoc, setUploadingDoc] = useState<DocumentType | null>(null)
   const [selectedDocType, setSelectedDocType] = useState<DocumentType | null>(null)
+  const [language, setLanguage] = useState<Language>("hi")
 
   const [documents, setDocuments] = useState<DocumentRequirement[]>([
     {
@@ -204,12 +204,21 @@ export default function DocumentUploadPage() {
       <MobileContainer>
         <div className="flex items-center justify-center h-screen">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">{t("loading", language)}</p>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto mb-4"></div>
+            <p className="text-secondary-foreground">{t("loading", language)}</p>
           </div>
         </div>
       </MobileContainer>
     )
+  }
+
+  const handleLanguageSelect = (lang: Language) => {
+    setLanguage(lang)
+    const user = MockDB.getCurrentUser()
+    if (user) {
+      const updatedUser = { ...user, preferredLanguage: lang }
+      MockDB.setCurrentUser(updatedUser)
+    }
   }
 
   const uploadedCount = documents.filter((doc) => doc.uploaded).length
@@ -218,19 +227,40 @@ export default function DocumentUploadPage() {
 
   return (
     <MobileContainer>
-      <AppHeader title={t("uploadDocuments", language)} language={language} onBack={goBack} />
+      <AppHeader title={t("uploadDocuments", language)} onBack={goBack} />
 
       <div className="p-4 space-y-6">
+        {/* Language Toggle */}
+        <div className="flex justify-end">
+          <div className="flex gap-1 bg-secondary rounded-lg p-1">
+            <button
+              onClick={() => handleLanguageSelect("hi")}
+              className={`px-3 py-1 text-sm rounded-md transition-colors cursor-pointer ${
+                language === "hi" ? "bg-background text-primary shadow-sm" : "text-secondary-foreground hover:text-foreground"
+              }`}
+            >
+              हिं
+            </button>
+            <button
+              onClick={() => handleLanguageSelect("en")}
+              className={`px-3 py-1 text-sm rounded-md transition-colors cursor-pointer ${
+                language === "en" ? "bg-background text-primary shadow-sm" : "text-secondary-foreground hover:text-foreground"
+              }`}
+            >
+              EN
+            </button>
+          </div>
+        </div>
         {/* Online/Offline Status */}
-        <Card className={`border-2 ${isOnline ? "border-green-200 bg-green-50" : "border-orange-200 bg-orange-50"}`}>
+        <Card className={`border-2 ${isOnline ? "border-primary bg-secondary" : "border-yellow-500/50 bg-yellow-500/10"}`}>
           <CardContent className="p-4">
             <div className="flex items-center gap-3">
-              {isOnline ? <Wifi className="w-5 h-5 text-green-600" /> : <WifiOff className="w-5 h-5 text-orange-600" />}
+              {isOnline ? <Wifi className="w-5 h-5 text-primary" /> : <WifiOff className="w-5 h-5 text-yellow-600" />}
               <div className="flex-1">
-                <p className={`font-medium ${isOnline ? "text-green-800" : "text-orange-800"}`}>
+                <p className={`font-medium ${isOnline ? "text-primary" : "text-yellow-700"}`}>
                   {isOnline ? (language === "hi" ? "ऑनलाइन" : "Online") : language === "hi" ? "ऑफलाइन" : "Offline"}
                 </p>
-                <p className={`text-sm ${isOnline ? "text-green-600" : "text-orange-600"}`}>
+                <p className={`text-sm ${isOnline ? "text-primary" : "text-yellow-600"}`}>
                   {isOnline
                     ? language === "hi"
                       ? "दस्तावेज अपलोड कर सकते हैं"
@@ -247,13 +277,13 @@ export default function DocumentUploadPage() {
         {/* Progress */}
         <div className="space-y-3">
           <div className="flex justify-between items-center">
-            <h2 className="text-lg font-semibold text-gray-900">{language === "hi" ? "प्रगति" : "Progress"}</h2>
-            <span className="text-sm text-gray-600">
+            <h2 className="text-lg font-semibold text-foreground">{language === "hi" ? "प्रगति" : "Progress"}</h2>
+            <span className="text-sm text-secondary-foreground">
               {uploadedCount}/{documents.length}
             </span>
           </div>
           <Progress value={progress} className="h-2" />
-          <p className="text-sm text-gray-600">
+          <p className="text-sm text-secondary-foreground">
             {language === "hi"
               ? `${totalRequired} आवश्यक दस्तावेज में से ${documents.filter((doc) => doc.required && doc.uploaded).length} अपलोड हो गए`
               : `${documents.filter((doc) => doc.required && doc.uploaded).length} of ${totalRequired} required documents uploaded`}
@@ -262,10 +292,10 @@ export default function DocumentUploadPage() {
 
         {/* Document List */}
         <div className="space-y-4">
-          <h3 className="font-semibold text-gray-900">{language === "hi" ? "दस्तावेज सूची" : "Document List"}</h3>
+          <h3 className="font-semibold text-foreground">{language === "hi" ? "दस्तावेज सूची" : "Document List"}</h3>
 
           {documents.map((doc) => (
-            <Card key={doc.type} className="border-2 hover:border-blue-200 transition-colors">
+            <Card key={doc.type} className="border-2 hover:border-primary transition-colors">
               <CardContent className="p-4">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
@@ -273,9 +303,9 @@ export default function DocumentUploadPage() {
                       className={`w-10 h-10 rounded-lg flex items-center justify-center ${
                         doc.uploaded
                           ? doc.verified
-                            ? "bg-green-100 text-green-600"
-                            : "bg-yellow-100 text-yellow-600"
-                          : "bg-gray-100 text-gray-600"
+                            ? "bg-primary/10 text-primary"
+                            : "bg-yellow-500/10 text-yellow-500"
+                          : "bg-secondary text-secondary-foreground"
                       }`}
                     >
                       {doc.uploaded ? (
@@ -291,7 +321,7 @@ export default function DocumentUploadPage() {
 
                     <div className="flex-1">
                       <div className="flex items-center gap-2">
-                        <h4 className="font-medium text-gray-900">{language === "hi" ? doc.nameHi : doc.nameEn}</h4>
+                        <h4 className="font-medium text-foreground">{language === "hi" ? doc.nameHi : doc.nameEn}</h4>
                         {doc.required && (
                           <Badge variant="secondary" className="text-xs">
                             {language === "hi" ? "आवश्यक" : "Required"}
@@ -299,7 +329,7 @@ export default function DocumentUploadPage() {
                         )}
                       </div>
 
-                      <p className="text-sm text-gray-600">
+                      <p className="text-sm text-secondary-foreground">
                         {doc.uploaded
                           ? doc.verified
                             ? language === "hi"
@@ -322,6 +352,7 @@ export default function DocumentUploadPage() {
                         size="sm"
                         onClick={() => takePhoto(doc.type)}
                         disabled={!isOnline || uploadingDoc === doc.type}
+                        className="cursor-pointer"
                       >
                         <Camera className="w-4 h-4" />
                       </Button>
@@ -330,9 +361,10 @@ export default function DocumentUploadPage() {
                         size="sm"
                         onClick={() => handleDocumentUpload(doc.type)}
                         disabled={!isOnline || uploadingDoc === doc.type}
+                        className="cursor-pointer"
                       >
                         {uploadingDoc === doc.type ? (
-                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600"></div>
+                          <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-primary"></div>
                         ) : (
                           <Upload className="w-4 h-4" />
                         )}
@@ -348,7 +380,7 @@ export default function DocumentUploadPage() {
         {/* Continue Button */}
         <Button
           onClick={proceedToDecision}
-          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4"
+          className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-4 cursor-pointer"
           disabled={documents.filter((doc) => doc.required && doc.uploaded).length < totalRequired}
         >
           {language === "hi" ? "AI निर्णय के लिए आगे बढ़ें" : "Proceed to AI Decision"}

@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { usePathname } from "next/navigation"
 import { MockDB, type User as MockUser, type LoanApplication } from "@/lib/mock-data"
 import { t, type Language } from "@/lib/translations"
 import { MobileContainer } from "@/components/layout/mobile-container"
@@ -12,10 +13,10 @@ import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Mic, MicOff, MessageCircle, Phone, IndianRupee, Target } from "lucide-react"
 
-type OnboardingStep = "language" | "welcome" | "chat" | "personal-info" | "loan-details" | "complete"
+type OnboardingStep = "welcome" | "chat" | "personal-info" | "loan-details" | "complete"
 
 export default function OnboardingPage() {
-  const [step, setStep] = useState<OnboardingStep>("language")
+  const [step, setStep] = useState<OnboardingStep>("welcome")
   const [language, setLanguage] = useState<Language>("hi")
   const [isListening, setIsListening] = useState(false)
   const [currentUser, setCurrentUser] = useState<MockUser | null>(null)
@@ -43,21 +44,15 @@ export default function OnboardingPage() {
     }
   }, [])
 
+  
+
   const handleLanguageSelect = (lang: Language) => {
     setLanguage(lang)
-
-    // Create or update user
-    const userId = MockDB.generateId()
-    const user: MockUser = {
-      id: userId,
-      phone: "",
-      preferredLanguage: lang,
-      createdAt: new Date(),
+    const user = MockDB.getCurrentUser()
+    if (user) {
+      const updatedUser = { ...user, preferredLanguage: lang }
+      MockDB.setCurrentUser(updatedUser)
     }
-
-    MockDB.setCurrentUser(user)
-    setCurrentUser(user)
-    setStep("welcome")
   }
 
   const toggleVoice = () => {
@@ -79,7 +74,7 @@ export default function OnboardingPage() {
 
   const proceedToLoanDetails = () => {
     if (!formData.name || !formData.phone || !formData.monthlyIncome) {
-      alert(language === "hi" ? "कृपया सभी फील्ड भरें" : "Please fill all fields")
+      alert(t("pleaseFillAllFields", language))
       return
     }
     setStep("loan-details")
@@ -87,7 +82,7 @@ export default function OnboardingPage() {
 
   const completeOnboarding = () => {
     if (!formData.loanAmount || !formData.loanPurpose) {
-      alert(language === "hi" ? "कृपया सभी फील्ड भरें" : "Please fill all fields")
+      alert(t("pleaseFillAllFields", language))
       return
     }
 
@@ -143,9 +138,6 @@ export default function OnboardingPage() {
 
   const goBack = () => {
     switch (step) {
-      case "welcome":
-        setStep("language")
-        break
       case "chat":
         setStep("welcome")
         break
@@ -168,71 +160,55 @@ export default function OnboardingPage() {
             step === "welcome"
               ? t("welcomeTitle", language)
               : step === "chat"
-                ? language === "hi"
-                  ? "चैट सहायता"
-                  : "Chat Assistant"
+                ? t("chatAssistant", language)
                 : step === "personal-info"
-                  ? language === "hi"
-                    ? "व्यक्तिगत जानकारी"
-                    : "Personal Information"
+                  ? t("personalInformation", language)
                   : step === "loan-details"
-                    ? language === "hi"
-                      ? "लोन विवरण"
-                      : "Loan Details"
+                    ? t("loanDetails", language)
                     : ""
           }
-          language={language}
           onBack={goBack}
         />
       )}
 
       <div className="p-4 space-y-6">
-        {/* Language Selection */}
-        {step === "language" && (
-          <div className="text-center space-y-8 pt-16">
-            <div className="space-y-4">
-              <h1 className="text-2xl font-bold text-gray-900">{t("selectLanguage", "en")} / भाषा चुनें</h1>
-            </div>
-
-            <div className="space-y-4">
-              <Card
-                className="cursor-pointer hover:shadow-md transition-shadow border-2 hover:border-blue-200"
-                onClick={() => handleLanguageSelect("hi")}
-              >
-                <CardContent className="p-6 text-center">
-                  <div className="text-2xl font-semibold text-gray-900 mb-2">हिंदी</div>
-                  <div className="text-gray-600">अपनी भाषा में आवेदन करें</div>
-                </CardContent>
-              </Card>
-
-              <Card
-                className="cursor-pointer hover:shadow-md transition-shadow border-2 hover:border-blue-200"
-                onClick={() => handleLanguageSelect("en")}
-              >
-                <CardContent className="p-6 text-center">
-                  <div className="text-2xl font-semibold text-gray-900 mb-2">English</div>
-                  <div className="text-gray-600">Apply in English</div>
-                </CardContent>
-              </Card>
-            </div>
+        {/* Language Toggle */}
+        <div className="flex justify-end">
+          <div className="flex gap-1 bg-secondary rounded-lg p-1">
+            <button
+              onClick={() => handleLanguageSelect("hi")}
+              className={`px-3 py-1 text-sm rounded-md transition-colors cursor-pointer ${
+                language === "hi" ? "bg-background text-primary shadow-sm" : "text-secondary-foreground hover:text-foreground"
+              }`}
+            >
+              हिं
+            </button>
+            <button
+              onClick={() => handleLanguageSelect("en")}
+              className={`px-3 py-1 text-sm rounded-md transition-colors cursor-pointer ${
+                language === "en" ? "bg-background text-primary shadow-sm" : "text-secondary-foreground hover:text-foreground"
+              }`}
+            >
+              EN
+            </button>
           </div>
-        )}
+        </div>
 
         {/* Welcome Screen */}
         {step === "welcome" && (
           <div className="text-center space-y-8 pt-8">
-            <div className="w-24 h-24 bg-blue-600 rounded-full flex items-center justify-center mx-auto">
-              <MessageCircle className="w-12 h-12 text-white" />
+            <div className="w-24 h-24 bg-primary rounded-full flex items-center justify-center mx-auto">
+              <MessageCircle className="w-12 h-12 text-primary-foreground" />
             </div>
 
             <div className="space-y-4">
-              <h2 className="text-2xl font-bold text-gray-900">{t("welcomeTitle", language)}</h2>
-              <p className="text-gray-600 text-lg">{t("chatWelcome", language)}</p>
+              <h2 className="text-2xl font-bold text-foreground">{t("welcomeTitle", language)}</h2>
+              <p className="text-secondary-foreground text-lg">{t("chatWelcome", language)}</p>
             </div>
 
             <Button
               onClick={proceedToChat}
-              className="w-full bg-blue-600 hover:bg-blue-700 text-white py-6 text-lg font-semibold rounded-xl"
+              className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-6 text-lg font-semibold rounded-xl cursor-pointer"
             >
               {language === "hi" ? "चैट शुरू करें" : "Start Chat"}
             </Button>
@@ -242,18 +218,16 @@ export default function OnboardingPage() {
         {/* Chat Interface */}
         {step === "chat" && (
           <div className="space-y-6">
-            <Card className="bg-blue-50 border-blue-200">
+            <Card className="bg-secondary border-primary">
               <CardContent className="p-4">
                 <div className="flex items-start gap-3">
-                  <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
-                    <MessageCircle className="w-4 h-4 text-white" />
+                  <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                    <MessageCircle className="w-4 h-4 text-primary-foreground" />
                   </div>
                   <div className="flex-1">
-                    <p className="text-gray-800">{t("chatWelcome", language)}</p>
-                    <p className="text-gray-600 mt-2 text-sm">
-                      {language === "hi"
-                        ? "आप टाइप कर सकते हैं या वॉइस का उपयोग कर सकते हैं"
-                        : "You can type or use voice input"}
+                    <p className="text-foreground">{t("chatWelcome", language)}</p>
+                    <p className="text-secondary-foreground mt-2 text-sm">
+                      {t("chatInputHint", language)}
                     </p>
                   </div>
                 </div>
@@ -261,19 +235,19 @@ export default function OnboardingPage() {
             </Card>
 
             <div className="flex gap-3">
-              <Input placeholder={language === "hi" ? "यहाँ टाइप करें..." : "Type here..."} className="flex-1" />
+              <Input placeholder={t("typeHere", language)} className="flex-1" />
               <Button
                 variant={isListening ? "default" : "outline"}
                 size="icon"
                 onClick={toggleVoice}
-                className={isListening ? "bg-red-600 hover:bg-red-700" : ""}
+                className={`cursor-pointer ${isListening ? "bg-destructive hover:bg-destructive/90" : ""}`}
               >
                 {isListening ? <MicOff className="w-4 h-4" /> : <Mic className="w-4 h-4" />}
               </Button>
             </div>
 
-            <Button onClick={proceedToPersonalInfo} className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4">
-              {language === "hi" ? "जानकारी भरें" : "Fill Information"}
+            <Button onClick={proceedToPersonalInfo} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-4 cursor-pointer">
+              {t("fillInformation", language)}
             </Button>
           </div>
         )}
@@ -285,56 +259,56 @@ export default function OnboardingPage() {
               <div className="space-y-2">
                 <Label htmlFor="name" className="flex items-center gap-2">
                   <Phone className="w-4 h-4" />
-                  {language === "hi" ? "पूरा नाम" : "Full Name"}
+                  {t("fullName", language)}
                 </Label>
                 <Input
                   id="name"
                   value={formData.name}
                   onChange={(e) => handleInputChange("name", e.target.value)}
-                  placeholder={language === "hi" ? "अपना नाम लिखें" : "Enter your name"}
+                  placeholder={t("enterYourName", language)}
                 />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="phone" className="flex items-center gap-2">
                   <Phone className="w-4 h-4" />
-                  {language === "hi" ? "मोबाइल नंबर" : "Mobile Number"}
+                  {t("mobileNumber", language)}
                 </Label>
                 <Input
                   id="phone"
                   type="tel"
                   value={formData.phone}
                   onChange={(e) => handleInputChange("phone", e.target.value)}
-                  placeholder={language === "hi" ? "10 अंकों का नंबर" : "10-digit number"}
+                  placeholder={t("tenDigitNumber", language)}
                 />
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="occupation">{language === "hi" ? "पेशा" : "Occupation"}</Label>
+                <Label htmlFor="occupation">{t("occupation", language)}</Label>
                 <Input
                   id="occupation"
                   value={formData.occupation}
                   onChange={(e) => handleInputChange("occupation", e.target.value)}
-                  placeholder={language === "hi" ? "आपका काम" : "Your job"}
+                  placeholder={t("yourJob", language)}
                 />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="income" className="flex items-center gap-2">
                   <IndianRupee className="w-4 h-4" />
-                  {language === "hi" ? "मासिक आय" : "Monthly Income"}
+                  {t("monthlyIncome", language)}
                 </Label>
                 <Input
                   id="income"
                   type="number"
                   value={formData.monthlyIncome}
                   onChange={(e) => handleInputChange("monthlyIncome", e.target.value)}
-                  placeholder={language === "hi" ? "₹ में राशि" : "Amount in ₹"}
+                  placeholder={t("amountInRupees", language)}
                 />
               </div>
             </div>
 
-            <Button onClick={proceedToLoanDetails} className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4">
+            <Button onClick={proceedToLoanDetails} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-4 cursor-pointer">
               {t("next", language)}
             </Button>
           </div>
@@ -347,55 +321,55 @@ export default function OnboardingPage() {
               <div className="space-y-2">
                 <Label htmlFor="amount" className="flex items-center gap-2">
                   <IndianRupee className="w-4 h-4" />
-                  {language === "hi" ? "लोन राशि" : "Loan Amount"}
+                  {t("loanAmount", language)}
                 </Label>
                 <Input
                   id="amount"
                   type="number"
                   value={formData.loanAmount}
                   onChange={(e) => handleInputChange("loanAmount", e.target.value)}
-                  placeholder={language === "hi" ? "₹ में राशि" : "Amount in ₹"}
+                  placeholder={t("amountInRupees", language)}
                 />
               </div>
 
               <div className="space-y-2">
                 <Label htmlFor="purpose" className="flex items-center gap-2">
                   <Target className="w-4 h-4" />
-                  {language === "hi" ? "लोन का उद्देश्य" : "Loan Purpose"}
+                  {t("loanPurpose", language)}
                 </Label>
                 <Select value={formData.loanPurpose} onValueChange={(value) => handleInputChange("loanPurpose", value)}>
                   <SelectTrigger>
-                    <SelectValue placeholder={language === "hi" ? "उद्देश्य चुनें" : "Select purpose"} />
+                    <SelectValue placeholder={t("selectPurpose", language)} />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="personal">{language === "hi" ? "व्यक्तिगत" : "Personal"}</SelectItem>
-                    <SelectItem value="business">{language === "hi" ? "व्यापार" : "Business"}</SelectItem>
-                    <SelectItem value="education">{language === "hi" ? "शिक्षा" : "Education"}</SelectItem>
-                    <SelectItem value="medical">{language === "hi" ? "चिकित्सा" : "Medical"}</SelectItem>
-                    <SelectItem value="home">{language === "hi" ? "घर" : "Home"}</SelectItem>
+                    <SelectItem value="personal">{t("personal", language)}</SelectItem>
+                    <SelectItem value="business">{t("business", language)}</SelectItem>
+                    <SelectItem value="education">{t("education", language)}</SelectItem>
+                    <SelectItem value="medical">{t("medical", language)}</SelectItem>
+                    <SelectItem value="home">{t("home", language)}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="tenure">{language === "hi" ? "अवधि (महीने)" : "Tenure (Months)"}</Label>
+                <Label htmlFor="tenure">{t("tenureMonths", language)}</Label>
                 <Select value={formData.loanTenure} onValueChange={(value) => handleInputChange("loanTenure", value)}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    <SelectItem value="6">6 {language === "hi" ? "महीने" : "months"}</SelectItem>
-                    <SelectItem value="12">12 {language === "hi" ? "महीने" : "months"}</SelectItem>
-                    <SelectItem value="18">18 {language === "hi" ? "महीने" : "months"}</SelectItem>
-                    <SelectItem value="24">24 {language === "hi" ? "महीने" : "months"}</SelectItem>
-                    <SelectItem value="36">36 {language === "hi" ? "महीने" : "months"}</SelectItem>
+                    <SelectItem value="6">6 {t("months", language)}</SelectItem>
+                    <SelectItem value="12">12 {t("months", language)}</SelectItem>
+                    <SelectItem value="18">18 {t("months", language)}</SelectItem>
+                    <SelectItem value="24">24 {t("months", language)}</SelectItem>
+                    <SelectItem value="36">36 {t("months", language)}</SelectItem>
                   </SelectContent>
                 </Select>
               </div>
             </div>
 
-            <Button onClick={completeOnboarding} className="w-full bg-blue-600 hover:bg-blue-700 text-white py-4">
-              {language === "hi" ? "आगे बढ़ें" : "Continue"}
+            <Button onClick={completeOnboarding} className="w-full bg-primary hover:bg-primary/90 text-primary-foreground py-4 cursor-pointer">
+              {t("continue", language)}
             </Button>
           </div>
         )}

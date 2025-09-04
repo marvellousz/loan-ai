@@ -146,16 +146,16 @@ function useI18n(lang: Lang) {
 
 function PhoneFrame({ title, children }: { title: string; children: React.ReactNode }) {
   return (
-    <div className="w-full max-w-xs rounded-3xl border border-slate-200 bg-white shadow-sm">
+    <div className="w-full max-w-xs rounded-3xl border border-border bg-card shadow-sm">
       <div className="flex items-center justify-between px-4 pt-4" aria-hidden>
-        <span className="text-xs text-slate-500">9:41</span>
-        <div className="h-2 w-20 rounded-full bg-slate-200" />
-        <span className="text-xs text-slate-500">4G</span>
+        <span className="text-xs text-muted-foreground">9:41</span>
+        <div className="h-2 w-20 rounded-full bg-muted" />
+        <span className="text-xs text-muted-foreground">4G</span>
       </div>
       <div className="px-4 pb-3 pt-2">
-        <h3 className="text-sm font-semibold text-slate-900">{title}</h3>
+        <h3 className="text-sm font-semibold text-foreground">{title}</h3>
       </div>
-      <div className="border-t border-slate-100 p-4">{children}</div>
+      <div className="border-t border-border p-4">{children}</div>
     </div>
   )
 }
@@ -172,30 +172,30 @@ function LanguageSelectorWireframe({
   return (
     <PhoneFrame title={t("titleLanguage")}>
       <div className="flex flex-col gap-4">
-        <p className="text-balance text-lg font-semibold text-slate-900">{t("greetHeading")}</p>
-        <p className="text-sm text-slate-600">{t("greetSub")}</p>
+        <p className="text-balance text-lg font-semibold text-foreground">{t("greetHeading")}</p>
+        <p className="text-sm text-secondary-foreground">{t("greetSub")}</p>
 
         <button
-          className="flex items-center gap-2 rounded-lg border border-slate-200 p-3 hover:bg-slate-50"
+          className="flex items-center gap-2 rounded-lg border border-border p-3 hover:bg-secondary cursor-pointer"
           aria-label={t("ariaSelectHindi")}
           onClick={() => setLang("hi")}
         >
-          <Languages className="h-5 w-5 text-blue-600" aria-hidden />
+          <Languages className="h-5 w-5 text-primary" aria-hidden />
           <div className="flex w-full items-center justify-between">
-            <span className="font-medium text-slate-900">{t("hindi")}</span>
-            <span className="rounded-md bg-blue-600 px-2 py-0.5 text-xs font-medium text-white">{t("choose")}</span>
+            <span className="font-medium text-foreground">{t("hindi")}</span>
+            <span className="rounded-md bg-primary px-2 py-0.5 text-xs font-medium text-primary-foreground">{t("choose")}</span>
           </div>
         </button>
 
         <button
-          className="w-full rounded-lg border border-slate-200 p-3 text-left text-slate-700 hover:bg-slate-50"
+          className="w-full rounded-lg border border-border p-3 text-left text-secondary-foreground hover:bg-secondary cursor-pointer"
           aria-label={t("ariaSelectEnglish")}
           onClick={() => setLang("en")}
         >
           {t("english")}
         </button>
 
-        <div className="mt-2 rounded-md bg-slate-50 p-3 text-xs text-slate-600">{t("offlineNote")}</div>
+        <div className="mt-2 rounded-md bg-secondary p-3 text-xs text-secondary-foreground">{t("offlineNote")}</div>
       </div>
     </PhoneFrame>
   )
@@ -209,33 +209,33 @@ function ChatbotOnboardingWireframe({
   return (
     <PhoneFrame title={t("titleChat")}>
       <div className="flex flex-col gap-3">
-        <div className="rounded-lg bg-slate-50 p-3 text-sm text-slate-800">
+        <div className="rounded-lg bg-secondary p-3 text-sm text-foreground">
           <div className="mb-1 flex items-center gap-2">
-            <MessageCircle className="h-4 w-4 text-blue-600" aria-hidden />
-            <span className="font-medium text-slate-900">{t("assistant")}</span>
+            <MessageCircle className="h-4 w-4 text-primary" aria-hidden />
+            <span className="font-medium text-foreground">{t("assistant")}</span>
           </div>
           <p>{t("chatbotMsg")}</p>
         </div>
 
         <div className="flex items-center gap-2">
-          <button className="flex flex-1 items-center justify-center gap-2 rounded-md border border-slate-200 px-3 py-2 text-sm font-medium text-slate-800 hover:bg-slate-50">
-            <Mic className="h-4 w-4 text-blue-600" aria-hidden />
+          <button className="flex flex-1 items-center justify-center gap-2 rounded-md border border-border px-3 py-2 text-sm font-medium text-foreground hover:bg-secondary cursor-pointer">
+            <Mic className="h-4 w-4 text-primary" aria-hidden />
             {t("voiceSpeak")}
           </button>
-          <button className="rounded-md border border-slate-200 px-3 py-2 text-sm font-medium text-slate-800 hover:bg-slate-50">
+          <button className="rounded-md border border-border px-3 py-2 text-sm font-medium text-foreground hover:bg-secondary cursor-pointer">
             {t("quickAmount")}
           </button>
         </div>
 
-        <div className="rounded-md border border-slate-200 p-2 text-xs text-slate-600">{t("tip")}</div>
+        <div className="rounded-md border border-border p-2 text-xs text-secondary-foreground">{t("tip")}</div>
 
-        <div className="mt-2 rounded-lg border border-dashed border-slate-300 p-3">
-          <label className="block text-xs font-medium text-slate-700">{t("basicInfo")}</label>
+        <div className="mt-2 rounded-lg border border-dashed border-border p-3">
+          <label className="block text-xs font-medium text-secondary-foreground">{t("basicInfo")}</label>
           <div className="mt-2 grid grid-cols-2 gap-2">
-            <div className="rounded-md bg-slate-50 p-2 text-xs text-slate-700">{t("name")}</div>
-            <div className="rounded-md bg-slate-50 p-2 text-xs text-slate-700">{t("village")}</div>
-            <div className="rounded-md bg-slate-50 p-2 text-xs text-slate-700">{t("amount")}</div>
-            <div className="rounded-md bg-slate-50 p-2 text-xs text-slate-700">{t("purpose")}</div>
+            <div className="rounded-md bg-secondary p-2 text-xs text-secondary-foreground">{t("name")}</div>
+            <div className="rounded-md bg-secondary p-2 text-xs text-secondary-foreground">{t("village")}</div>
+            <div className="rounded-md bg-secondary p-2 text-xs text-secondary-foreground">{t("amount")}</div>
+            <div className="rounded-md bg-secondary p-2 text-xs text-secondary-foreground">{t("purpose")}</div>
           </div>
         </div>
       </div>
@@ -251,31 +251,31 @@ function UploadDataWireframe({
   return (
     <PhoneFrame title={t("titleUpload")}>
       <div className="flex flex-col gap-3">
-        <div className="rounded-md bg-slate-50 p-3 text-sm text-slate-800">{t("uploadFast")}</div>
+        <div className="rounded-md bg-secondary p-3 text-sm text-foreground">{t("uploadFast")}</div>
 
         <div className="grid grid-cols-2 gap-2">
-          <button className="flex flex-col items-center gap-2 rounded-lg border border-slate-200 p-4 hover:bg-slate-50">
-            <FileText className="h-5 w-5 text-blue-600" aria-hidden />
-            <span className="text-xs font-medium text-slate-800">{t("aadhaar")}</span>
+          <button className="flex flex-col items-center gap-2 rounded-lg border border-border p-4 hover:bg-secondary cursor-pointer">
+            <FileText className="h-5 w-5 text-primary" aria-hidden />
+            <span className="text-xs font-medium text-foreground">{t("aadhaar")}</span>
           </button>
-          <button className="flex flex-col items-center gap-2 rounded-lg border border-slate-200 p-4 hover:bg-slate-50">
-            <FileText className="h-5 w-5 text-blue-600" aria-hidden />
-            <span className="text-xs font-medium text-slate-800">{t("pan")}</span>
+          <button className="flex flex-col items-center gap-2 rounded-lg border border-border p-4 hover:bg-secondary cursor-pointer">
+            <FileText className="h-5 w-5 text-primary" aria-hidden />
+            <span className="text-xs font-medium text-foreground">{t("pan")}</span>
           </button>
-          <button className="col-span-2 flex items-center justify-center gap-2 rounded-lg border border-slate-200 p-3 hover:bg-slate-50">
-            <ImageIcon className="h-5 w-5 text-blue-600" aria-hidden />
-            <span className="text-sm font-medium text-slate-800">{t("photo")}</span>
+          <button className="col-span-2 flex items-center justify-center gap-2 rounded-lg border border-border p-3 hover:bg-secondary cursor-pointer">
+            <ImageIcon className="h-5 w-5 text-primary" aria-hidden />
+            <span className="text-sm font-medium text-foreground">{t("photo")}</span>
           </button>
         </div>
 
-        <button className="flex items-center justify-center gap-2 rounded-md bg-blue-600 p-2 text-sm font-medium text-white">
+        <button className="flex items-center justify-center gap-2 rounded-md bg-primary p-2 text-sm font-medium text-primary-foreground cursor-pointer">
           <Upload className="h-4 w-4" aria-hidden />
           {t("uploadBtn")}
         </button>
 
-        <div className="rounded-md border border-slate-200 p-2">
-          <p className="text-xs text-slate-700">{t("altData")}</p>
-          <ul className="mt-1 list-disc space-y-1 pl-5 text-xs text-slate-600">
+        <div className="rounded-md border border-border p-2">
+          <p className="text-xs text-secondary-foreground">{t("altData")}</p>
+          <ul className="mt-1 list-disc space-y-1 pl-5 text-xs text-secondary-foreground">
             <li>{t("smsPatterns")}</li>
             <li>{t("bills")}</li>
           </ul>
@@ -293,47 +293,47 @@ function DecisionScreenWireframe({
   return (
     <PhoneFrame title={t("titleDecision")}>
       <div className="flex flex-col gap-3">
-        <div className="flex items-start gap-2 rounded-md border border-slate-200 p-3" role="status" aria-live="polite">
-          <CheckCircle2 className="mt-0.5 h-5 w-5 text-green-600" aria-hidden />
+        <div className="flex items-start gap-2 rounded-md border border-border p-3" role="status" aria-live="polite">
+          <CheckCircle2 className="mt-0.5 h-5 w-5 text-primary" aria-hidden />
           <div>
-            <p className="text-lg font-semibold text-slate-900">{t("approved")}</p>
-            <p className="text-sm text-slate-600">{t("termRate")}</p>
+            <p className="text-lg font-semibold text-foreground">{t("approved")}</p>
+            <p className="text-sm text-secondary-foreground">{t("termRate")}</p>
           </div>
         </div>
 
-        <div className="rounded-lg bg-slate-50 p-3">
+        <div className="rounded-lg bg-secondary p-3">
           <div className="mb-2 flex items-center gap-2">
-            <Info className="h-4 w-4 text-blue-600" aria-hidden />
-            <p className="text-sm font-medium text-slate-900">{t("whyApproved")}</p>
+            <Info className="h-4 w-4 text-primary" aria-hidden />
+            <p className="text-sm font-medium text-foreground">{t("whyApproved")}</p>
           </div>
-          <ul className="list-disc space-y-1 pl-5 text-xs text-slate-700">
+          <ul className="list-disc space-y-1 pl-5 text-xs text-secondary-foreground">
             <li>{t("reason1")}</li>
             <li>{t("reason2")}</li>
             <li>{t("reason3")}</li>
           </ul>
         </div>
 
-        <div className="rounded-md border border-slate-200 p-3">
-          <p className="text-sm font-medium text-slate-900">{t("emiTitle")}</p>
-          <p className="text-sm text-slate-700">{t("emiAmount")}</p>
+        <div className="rounded-md border border-border p-3">
+          <p className="text-sm font-medium text-foreground">{t("emiTitle")}</p>
+          <p className="text-sm text-secondary-foreground">{t("emiAmount")}</p>
         </div>
 
         <div className="flex gap-2">
-          <button className="flex-1 rounded-md border border-slate-200 px-3 py-2 text-sm font-medium text-slate-800 hover:bg-slate-50">
+          <button className="flex-1 rounded-md border border-border px-3 py-2 text-sm font-medium text-foreground hover:bg-secondary">
             {t("later")}
           </button>
-          <button className="flex-1 rounded-md bg-blue-600 px-3 py-2 text-sm font-medium text-white">
+          <button className="flex-1 rounded-md bg-primary px-3 py-2 text-sm font-medium text-primary-foreground">
             {t("accept")}
           </button>
         </div>
 
-        <div className="rounded-md border border-dashed border-slate-300 p-3">
+        <div className="rounded-md border border-dashed border-border p-3">
           <div className="mb-2 flex items-center gap-2">
-            <XCircle className="h-4 w-4 text-red-600" aria-hidden />
-            <p className="text-sm font-medium text-slate-900">{t("ifRejected")}</p>
+            <XCircle className="h-4 w-4 text-destructive" aria-hidden />
+            <p className="text-sm font-medium text-foreground">{t("ifRejected")}</p>
           </div>
-          <p className="text-xs text-slate-700">{t("showReasons")}</p>
-          <ul className="mt-1 list-disc space-y-1 pl-5 text-xs text-slate-700">
+          <p className="text-xs text-secondary-foreground">{t("showReasons")}</p>
+          <ul className="mt-1 list-disc space-y-1 pl-5 text-xs text-secondary-foreground">
             <li>{t("improve1")}</li>
             <li>{t("improve2")}</li>
           </ul>
@@ -350,26 +350,26 @@ export default function WireframesPage() {
   return (
     <main className="mx-auto max-w-5xl px-4 py-8 font-sans">
       <header className="mb-6">
-        <h1 className="text-balance text-2xl font-bold text-slate-900">{t("headerTitle")}</h1>
-        <p className="mt-1 text-pretty text-sm text-slate-600">{t("headerSub")}</p>
+        <h1 className="text-balance text-2xl font-bold text-foreground">{t("headerTitle")}</h1>
+        <p className="mt-1 text-pretty text-sm text-secondary-foreground">{t("headerSub")}</p>
       </header>
 
       <section aria-labelledby="wireframes" className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
         <div className="flex flex-col items-center gap-2">
           <LanguageSelectorWireframe t={t} lang={lang} setLang={setLang} />
-          <p className="text-center text-sm font-medium text-slate-700">{t("capLanguage")}</p>
+          <p className="text-center text-sm font-medium text-secondary-foreground">{t("capLanguage")}</p>
         </div>
         <div className="flex flex-col items-center gap-2">
           <ChatbotOnboardingWireframe t={t} />
-          <p className="text-center text-sm font-medium text-slate-700">{t("capChat")}</p>
+          <p className="text-center text-sm font-medium text-secondary-foreground">{t("capChat")}</p>
         </div>
         <div className="flex flex-col items-center gap-2">
           <UploadDataWireframe t={t} />
-          <p className="text-center text-sm font-medium text-slate-700">{t("capUpload")}</p>
+          <p className="text-center text-sm font-medium text-secondary-foreground">{t("capUpload")}</p>
         </div>
         <div className="flex flex-col items-center gap-2">
           <DecisionScreenWireframe t={t} />
-          <p className="text-center text-sm font-medium text-slate-700">{t("capDecision")}</p>
+          <p className="text-center text-sm font-medium text-secondary-foreground">{t("capDecision")}</p>
         </div>
       </section>
     </main>

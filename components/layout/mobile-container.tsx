@@ -7,5 +7,5 @@ interface MobileContainerProps {
 }
 
 export function MobileContainer({ children, className }: MobileContainerProps) {
-  return <div className={cn("min-h-screen bg-gray-50 max-w-md mx-auto relative", className)}>{children}</div>
+  return <div className={cn("min-h-screen bg-background max-w-md mx-auto relative", className)}>{children}</div>
 }
